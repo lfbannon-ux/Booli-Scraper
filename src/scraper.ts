@@ -43,15 +43,17 @@ export async function scrapeBooli(): Promise<ScrapedData> {
 
     // Extract both numbers from the text
     // Format: "50 803 till salu och 35 547 snart till salu"
-    const numbers = fullText.match(/[\d\s]+/g);
+    // Match: number before "till salu" and number before "snart till salu"
+    const forSaleMatch = fullText.match(/([\d\s]+)\s+till salu/i);
+    const soonMatch = fullText.match(/([\d\s]+)\s+snart till salu/i);
     
-    if (!numbers || numbers.length < 2) {
+    if (!forSaleMatch || !soonMatch) {
       throw new Error(`Could not extract numbers from text: "${fullText}"`);
     }
 
-    // Clean and parse numbers (remove spaces)
-    const forSale = parseInt(numbers[0].replace(/\s/g, ''), 10);
-    const soonToBeSold = parseInt(numbers[1].replace(/\s/g, ''), 10);
+    // Clean and parse numbers (remove all spaces)
+    const forSale = parseInt(forSaleMatch[1].replace(/\s/g, ''), 10);
+    const soonToBeSold = parseInt(soonMatch[1].replace(/\s/g, ''), 10);
 
     console.log(`Scraped data: For sale=${forSale}, Soon to be sold=${soonToBeSold}`);
 
