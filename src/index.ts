@@ -44,10 +44,16 @@ async function runWeeklyReport(): Promise<void> {
 
 async function runOnStartup(): Promise<void> {
   const runOnStartupEnabled = process.env.RUN_ON_STARTUP === 'true';
+  const sendTestEmail = process.env.SEND_TEST_EMAIL === 'true';
 
   if (runOnStartupEnabled) {
     console.log('Running initial scrape on startup...');
     await runDailyScrape();
+  }
+
+  if (sendTestEmail) {
+    console.log('Sending test email on startup...');
+    await runWeeklyReport();
   }
 }
 
